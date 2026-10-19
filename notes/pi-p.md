@@ -1,7 +1,7 @@
-# The integral behind π_p
+# π_p, and why π_2 = π
 
 **Lean file:** [`Portfolio/PLaplacian/PiP.lean`](../Portfolio/PLaplacian/PiP.lean) ·
-**Main theorem:** `Portfolio.piIntegral_two` · **Status:** the case $p = 2$ is proved; the general closed form is next
+**Main theorems:** `Portfolio.piIntegral_two`, `Portfolio.piP_two` · **Status:** the case $p = 2$ is proved; the general closed form is next
 
 ![The integrand for several p, and the value of the integral](../figures/04_pi_p.png)
 
@@ -15,15 +15,19 @@ is solved by a *generalized sine* $\sin_p$. Its inverse is written with an integ
 
 $$\arcsin_p x = \int_0^x \left(1-s^p\right)^{-1/p} ds, \qquad 0 \le x \le 1.$$
 
-The value at $x = 1$ is a quarter period of $\sin_p$, and the constant $\pi_p$ is defined from it:
+The value at $x = 1$ is a quarter period of $\sin_p$, and the constant $\pi_p$ is twice it:
 
-$$I_p = \int_0^1 \left(1-s^p\right)^{-1/p} ds, \qquad \pi_p = 2 I_p \quad \text{(Lindqvist's normalization)}.$$
+$$I_p = \int_0^1 \left(1-s^p\right)^{-1/p} ds, \qquad \pi_p = 2 I_p.$$
 
-Other authors, working with the eigenvalue problem above, include a factor $(p-1)^{1/p}$ in $\pi_p$. Either way everything rests on $I_p$, which is what this file formalizes. For $p = 2$ we get back $\sin$, $\arcsin$ and $\pi$.
+This is Lindqvist's normalization. With it, $u(x) = \sin_p(\pi_p x)$ is the first eigenfunction on $(0, 1)$ with zero boundary values, and the first eigenvalue is
+
+$$\lambda_1 = (p-1)\,\pi_p^{\,p}.$$
+
+Some authors absorb the factor $(p-1)^{1/p}$ into $\pi_p$ so that $\lambda_1 = \pi_p^{\,p}$; the two conventions differ only by that factor. For $p = 2$ we get back $\sin$, $\arcsin$, $\pi$ and $\lambda_1 = \pi^2$.
 
 ## What is proved so far
 
-$$I_2 = \int_0^1 \frac{ds}{\sqrt{1-s^2}} = \frac{\pi}{2}.$$
+$$I_2 = \int_0^1 \frac{ds}{\sqrt{1-s^2}} = \frac{\pi}{2}, \qquad \text{hence} \qquad \pi_2 = \pi.$$
 
 The interesting part is that this integral is **improper**: the integrand blows up at $s = 1$ (left panel). On paper one writes $\lim_{b \to 1^-} \arcsin b$; the formal proof avoids that limit altogether.
 
@@ -35,6 +39,7 @@ graph TD
     A["integral_one_div_sqrt_one_sub_sq<br/>∫₀¹ 1/√(1 − s²) ds = π/2"]
     E["piIntegral_two_integrand<br/>for p = 2 the integrands agree on [0, 1]"]
     M["piIntegral_two<br/>I₂ = π/2"]
+    P["piP_two<br/>π₂ = 2 I₂ = π"]
     L1["hasDerivAt_arcsin<br/>arcsin′ = 1/√(1 − s²) on (−1, 1)"]
     L2["integrableOn_deriv_of_nonneg<br/>a nonnegative derivative is integrable"]
     L3["integral_eq_sub_of_hasDerivAt_of_le<br/>fundamental theorem of calculus"]
@@ -44,10 +49,11 @@ graph TD
     D --> M
     A --> M
     E --> M
+    M --> P
     classDef main fill:#FBF1E3,stroke:#C07A1E,color:#141A18
     classDef ours fill:#EEF3F8,stroke:#24609C,color:#141A18
     classDef lib fill:#F3F6F2,stroke:#C9CEC8,color:#5D6862
-    class M main
+    class M,P main
     class D,A,E ours
     class L1,L2,L3 lib
 ```
@@ -73,7 +79,7 @@ rw [integral_eq_sub_of_hasDerivAt_of_le zero_le_one hcont hderiv hint, arcsin_on
 
 The integral becomes $\arcsin 1 - \arcsin 0 = \pi/2 - 0$.
 
-**Step 3. Matching the general definition.** `piIntegral p` uses real powers `s ^ p` and `(⋯) ^ (-(1 / p))`, which in Lean are `Real.rpow` and are defined for every real exponent. For $p = 2$ the lemma `piIntegral_two_integrand` rewrites $s^{(2 : \mathbb{R})}$ as $s^2$ (`rpow_two`), a negative exponent as an inverse (`rpow_neg`), and the power $1/2$ as a square root (`sqrt_eq_rpow`). The two integrands then agree on all of $[0, 1]$, endpoint included, and `integral_congr` transfers the value.
+**Step 3. Matching the general definition.** `piIntegral p` uses real powers `s ^ p` and `(⋯) ^ (-(1 / p))`, which in Lean are `Real.rpow` and are defined for every real exponent. For $p = 2$ the lemma `piIntegral_two_integrand` rewrites $s^{(2 : \mathbb{R})}$ as $s^2$ (`rpow_two`), a negative exponent as an inverse (`rpow_neg`), and the power $1/2$ as a square root (`sqrt_eq_rpow`). The two integrands then agree on all of $[0, 1]$, endpoint included, and `integral_congr` transfers the value. Finally `piP_two` is one line: $\pi_2 = 2 \cdot \pi/2 = \pi$.
 
 ## What comes next
 
@@ -85,7 +91,7 @@ The plan in Lean has three steps: the substitution $u = s^p$ turns $I_p$ into $\
 
 ## Independent checks
 
-[`tests/test_identities.py`](../tests/test_identities.py) computes $I_2 = \pi/2$ symbolically in SymPy, checks $\arcsin' = 1/\sqrt{1-s^2}$, and compares numerical quadrature of $I_p$ with $\pi/(p\sin(\pi/p))$ for eight values of $p$, to $10^{-7}$. [`Test/Axioms.lean`](../Test/Axioms.lean) confirms that `piIntegral_two` uses only the three standard axioms.
+[`tests/test_identities.py`](../tests/test_identities.py) computes $I_2 = \pi/2$ symbolically in SymPy, checks $\arcsin' = 1/\sqrt{1-s^2}$, and compares numerical quadrature of $I_p$ with $\pi/(p\sin(\pi/p))$ for eight values of $p$, to $10^{-7}$. [`Test/Axioms.lean`](../Test/Axioms.lean) confirms that `piIntegral_two` and `piP_two` use only the three standard axioms.
 
 ## Reference
 

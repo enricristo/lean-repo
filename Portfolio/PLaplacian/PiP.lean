@@ -11,12 +11,13 @@ public import Mathlib
 # The constant π_p of the one dimensional p-Laplacian
 
 For `p > 1`, the first eigenfunction of `-(|u'|^{p-2} u')' = λ |u|^{p-2} u` on an interval is a
-generalized sine, and its half period is governed by the integral
+generalized sine `sin_p`. A quarter of its period is the integral
 
-  `I p = ∫₀¹ (1 - s ^ p) ^ (-1 / p) ds`.
+  `I p = ∫₀¹ (1 - s ^ p) ^ (-1 / p) ds`,
 
-For `p = 2` the integrand is `1 / √(1 - s ^ 2)`, the derivative of `arcsin`, and `I 2 = π / 2`.
-This file starts with that case. The integral is improper at `s = 1`, and the proof handles that
+and `π_p = 2 I p` (Lindqvist's normalization). For `p = 2` the integrand is `1 / √(1 - s ^ 2)`,
+the derivative of `arcsin`, so `I 2 = π / 2` and `π_2 = π`. This file starts with that case.
+The integral is improper at `s = 1`, and the proof handles that
 without computing any limit: a function whose derivative is nonnegative has an integrable
 derivative (`integrableOn_deriv_of_nonneg`).
 -/
@@ -50,13 +51,23 @@ theorem piIntegral_two_integrand {s : ℝ} (hs : s ∈ Icc (0 : ℝ) 1) :
   rw [rpow_two, rpow_neg h0, sqrt_eq_rpow]
   exact (one_div _).symm
 
-/-- **Main result.** `I 2 = π / 2`. -/
+/-- `I 2 = π / 2`. -/
 theorem piIntegral_two : piIntegral 2 = π / 2 := by
   unfold piIntegral
   rw [← integral_one_div_sqrt_one_sub_sq]
   refine integral_congr fun s hs ↦ ?_
   rw [uIcc_of_le zero_le_one] at hs
   exact piIntegral_two_integrand hs
+
+/-- The constant `π_p`, in Lindqvist's normalization: twice the integral above.
+With it, the first eigenvalue of `-(|u'|^{p-2} u')' = λ |u|^{p-2} u` on `(0, 1)` with zero
+boundary values is `(p - 1) π_p ^ p`. -/
+noncomputable def piP (p : ℝ) : ℝ := 2 * piIntegral p
+
+/-- **Main result.** For `p = 2`, `π_p` is `π`. -/
+theorem piP_two : piP 2 = π := by
+  rw [piP, piIntegral_two]
+  ring
 
 end Portfolio
 

@@ -34,3 +34,9 @@ info: 'Portfolio.piIntegral_two' depends on axioms: [propext, Classical.choice, 
 -/
 #guard_msgs in
 #print axioms Portfolio.piIntegral_two
+
+/--
+info: 'Portfolio.piP_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.piP_two

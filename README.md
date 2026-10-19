@@ -41,17 +41,17 @@ unconditional `HasSum` using that the terms are nonnegative.
 
 ![cancellation](figures/02_telescoping_cancellation.png)
 
-### 3. The integral behind π<sub>p</sub>, case p = 2
+### 3. π<sub>p</sub>, and why π<sub>2</sub> = π
 
-$$\int_0^1 \left(1-s^p\right)^{-1/p} ds \;\Big|_{p=2} = \int_0^1 \frac{ds}{\sqrt{1-s^2}} = \frac{\pi}{2}$$
+$$\pi_p = 2\int_0^1 \left(1-s^p\right)^{-1/p} ds, \qquad \pi_2 = 2\int_0^1 \frac{ds}{\sqrt{1-s^2}} = \pi$$
 
 $\pi_p$ is the constant of the generalized sine that solves the one
-dimensional $p$-Laplacian eigenvalue problem, and the integral above is where
-it comes from. The integral is improper at $s = 1$; the Lean proof never takes
-a limit, because a nonnegative derivative of a bounded function (here
-$\arcsin$) is automatically integrable. Next: the closed form
-$\pi/(p\sin(\pi/p))$ for every $p > 1$, through the Beta function and Euler's
-reflection formula.
+dimensional $p$-Laplacian eigenvalue problem: on $(0, 1)$ the first
+eigenvalue is $(p-1)\pi_p^{\,p}$. The integral is improper at $s = 1$; the
+Lean proof never takes a limit, because a nonnegative derivative of a bounded
+function (here $\arcsin$) is automatically integrable. Next: the closed form
+$\pi_p = 2\pi/(p\sin(\pi/p))$ for every $p > 1$, through the Beta function
+and Euler's reflection formula.
 [Note](notes/pi-p.md) · [Lean](Portfolio/PLaplacian/PiP.lean)
 
 ![pi_p](figures/04_pi_p.png)
