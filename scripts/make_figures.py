@@ -236,6 +236,144 @@ def fig_pi_p():
     return fig
 
 
+# ── 05 · time scales ────────────────────────────────────────────────────────
+def fig_time_scales():
+    c = 1.0
+    fig, (ax, bx) = plt.subplots(1, 2, figsize=(12, 4.8))
+    t = np.linspace(0, 2, 300)
+    ax.plot(t, np.exp(c * t), color=INK, lw=1.6)
+    ax.text(1.93, np.exp(1.93) + 0.25, r"$e^t$ on $\mathbb{R}$", color=INK, fontsize=9.5, ha="right")
+    for h, col, lab in [(1.0, AMBER, "h = 1"), (0.5, NAVY, "h = 1/2"), (0.25, NAVY_LIGHT, "h = 1/4")]:
+        n = np.arange(0, int(round(2 / h)) + 1)
+        y = (1 + h * c) ** n
+        ax.step(h * n, y, where="post", color=col, lw=1.2, alpha=0.9)
+        ax.scatter(h * n, y, s=26 if h == 1.0 else 16, color=col, zorder=3)
+        ax.text(h * n[-1] + 0.04, y[-1], lab, color=col if h != 0.25 else INK_2, fontsize=9, va="center")
+    ax.set_xlim(0, 2.35)
+    ax.set_xlabel("t")
+    ax.set_title(r"Hilger exponential $(1+h)^{t/h}$ on $h\mathbb{Z}$ against $e^t$", pad=10)
+
+    Ns = np.array([1, 2, 3, 5, 10, 20, 50, 100, 300, 1000])
+    vals = (1 + 1 / Ns) ** Ns
+    bx.axhline(np.e, color=INK, lw=1.4)
+    bx.text(1000, np.e + 0.012, "e", color=INK, fontsize=11, ha="right", va="bottom")
+    bx.plot(Ns, vals, color=NAVY_LIGHT, lw=1.0)
+    bx.scatter(Ns, vals, s=22, color=NAVY, zorder=3)
+    bx.scatter([1], [2], s=60, color=AMBER, zorder=4)
+    bx.text(1.25, 2.0, "h = 1: value 2, not e", color=AMBER, fontsize=10, fontweight="semibold", va="center")
+    bx.set_xscale("log")
+    bx.set_xticks([1, 10, 100, 1000], ["1", "10", "100", "1000"])
+    bx.minorticks_off()
+    bx.set_ylim(1.9, 2.8)
+    bx.set_xlabel("N = 1/h, number of steps to reach t = 1 (log scale)")
+    bx.set_title("Value at t = 1 as the graininess h → 0", pad=10)
+    viz.headline(fig, r"On $\mathbb{Z}$ the exponential grows like $2^n$, not $e^n$; it only becomes $e$ as h → 0",
+                 r"Solutions of $y^\Delta = y$, $y(0) = 1$ on the time scale $h\mathbb{Z}$. All of it is proved in Lean",
+                 extra_top=8)  # fmt: skip
+    fig.subplots_adjust(wspace=0.2)
+    return fig
+
+
+# ── 06 · Dirac ──────────────────────────────────────────────────────────────
+def fig_dirac():
+    fig, (ax, bx) = plt.subplots(1, 2, figsize=(12, 4.6))
+
+    def bump(x, eps):
+        """A smooth bump equal to 1 on [-eps/2, eps/2] and 0 outside (-eps, eps)."""
+        def g(u):
+            return np.where(u > 0, np.exp(-1 / np.where(u > 0, u, 1)), 0.0)
+
+        r = np.abs(x)
+        s = (r - eps / 2) / (eps / 2)
+        return np.where(r <= eps / 2, 1.0, g(1 - s) / (g(1 - s) + g(s)))
+
+    x = np.linspace(-1.1, 1.1, 2000)
+    for eps, col, lw in [(1.0, NAVY_LIGHT, 1.2), (0.5, NAVY, 1.6), (0.2, AMBER, 2.2)]:
+        ax.plot(x, bump(x, eps), color=col, lw=lw)
+    ax.text(-1.08, 1.1, r"$\varphi_\varepsilon(0) = 1$ for every ε", color=INK, fontsize=9.5)
+    ax.text(0.95, 0.12, "ε = 1", color=INK_2, fontsize=9)
+    ax.text(0.47, 0.12, "ε = 1/2", color=NAVY, fontsize=9)
+    ax.text(0.0, 1.04, "ε = 1/5", color=AMBER, fontsize=9.5, fontweight="semibold", ha="center")
+    ax.set_ylim(-0.05, 1.22)
+    ax.set_xlabel("x")
+    ax.set_title("Test functions concentrating at 0", pad=10)
+
+    r = np.logspace(-4, 0, 200)
+    bx.plot(r, 4 * np.sqrt(r), color=NAVY, lw=2.0)
+    bx.axhline(1, color=AMBER, lw=2.0)
+    bx.text(1.2e-4, 1.08, r"what $\int f\varphi_\varepsilon$ must equal: $\varphi_\varepsilon(0) = 1$", color=AMBER, fontsize=9.5, fontweight="semibold")
+    bx.text(1.2e-4, 3.0, r"upper bound $\int_{-\varepsilon}^{\varepsilon}|f|$, here for" "\n" r"$f(x) = |x|^{-1/2}$: $4\sqrt{\varepsilon} \to 0$",
+            color=NAVY, fontsize=9)  # fmt: skip
+    bx.set_xscale("log")
+    bx.minorticks_off()
+    bx.set_ylim(0, 4.2)
+    bx.set_xlabel("ε (log scale)")
+    bx.set_title("The integral is squeezed below 1", pad=10)
+    viz.headline(fig, "No function f can satisfy ∫ f φ = φ(0) for every test function",
+                 r"The proof in Lean: $\varphi_\varepsilon(0) = 1$ always, but $|\int f\varphi_\varepsilon| \leq \int_{-\varepsilon}^{\varepsilon} |f|$, which tends to 0",
+                 extra_top=8)  # fmt: skip
+    fig.subplots_adjust(wspace=0.2)
+    return fig
+
+
+# ── 07 · Ekeland ────────────────────────────────────────────────────────────
+def ekeland_f(x):
+    """A wavy function on the line, bounded below, used to draw the principle."""
+    return 1.1 + 0.45 * np.sin(2.2 * x) + 0.05 * (x - 0.6) ** 2
+
+
+def ekeland_point(x0: float, eps: float, grid: np.ndarray) -> float:
+    """A point given by Ekeland's principle: a minimizer of z -> f(z) + eps |z - x0|."""
+    return float(grid[np.argmin(ekeland_f(grid) + eps * np.abs(grid - x0))])
+
+
+def fig_ekeland():
+    fig, (ax, bx) = plt.subplots(1, 2, figsize=(12, 4.8), gridspec_kw={"width_ratios": [1.35, 1]})
+
+    x = np.linspace(-3.2, 3.2, 4001)
+    x0, eps = 2.6, 0.35
+    y = ekeland_point(x0, eps, x)
+    fy = float(ekeland_f(y))
+    cone = fy - eps * np.abs(x - y)
+    ax.fill_between(x, cone, -0.2, color=AMBER_WASH, lw=0)
+    ax.plot(x, cone, color=AMBER, lw=1.4, ls=(0, (5, 3)))
+    ax.plot(x, ekeland_f(x), color=NAVY, lw=2.2)
+    ax.scatter([x0], [ekeland_f(x0)], s=40, color=PAPER, edgecolors=INK, linewidths=1.5, zorder=5)
+    ax.scatter([y], [fy], s=70, color=AMBER, zorder=6)
+    ax.text(x0 - 0.1, ekeland_f(x0) + 0.03, r"start $x_0$", color=INK, fontsize=9.5, ha="right")
+    ax.text(y, 0.28, "Ekeland point y", color=AMBER, fontsize=10, fontweight="semibold", ha="center")
+    ax.text(-3.1, -0.12, "cone " r"$z \mapsto f(y) - \varepsilon\,|z - y|$" "\nstays below the graph", color=AMBER,
+            fontsize=9)  # fmt: skip
+    zmin = float(x[np.argmin(ekeland_f(x))])
+    ax.text(zmin, float(ekeland_f(zmin)) - 0.14, "global minimum,\nnot needed", color=INK_3, fontsize=8.5,
+            ha="center", va="top")  # fmt: skip
+    ax.text(-3.1, 2.02, "f, bounded below", color=NAVY, fontsize=9.5)
+    ax.set_ylim(-0.2, 2.3)
+    ax.set_xlabel("z")
+    ax.set_title("The principle: a point that the cone touches only once", pad=10)
+
+    epss = np.array([0.5, 0.25, 0.1, 0.05, 0.02, 0.01])
+    us = np.log(1 / epss)
+    t = np.linspace(-0.5, 5.2, 400)
+    bx.plot(t, np.exp(-t), color=NAVY, lw=2.0)
+    bx.axhline(0, color=CONTEXT, lw=1.0)
+    bx.scatter(us, np.exp(-us), s=34, color=AMBER, zorder=4)
+    for e, u in zip(epss[[0, 2, 5]], us[[0, 2, 5]]):
+        bx.text(u, np.exp(-u) + 0.09, f"ε = {e:g}", color=INK_2, fontsize=8.5, ha="center")
+    bx.text(1.3, 1.25, r"$f(x) = e^{-x}$: infimum 0, never attained", color=NAVY, fontsize=9.5)
+    bx.text(5.1, 0.42, "almost critical points\n" r"$|f'(u_\varepsilon)| \leq \varepsilon$ run off to $+\infty$",
+            color=AMBER, fontsize=9, fontweight="semibold", ha="right")  # fmt: skip
+    bx.set_ylim(-0.08, 1.5)
+    bx.set_xlabel("x")
+    bx.set_title("Without Palais-Smale the minimum can escape", pad=10)
+    viz.headline(fig, "Every function bounded below has almost minimizers that are almost critical",
+                 r"Ekeland's principle in Lean, and its corollary: $f(u) \leq \inf f + \varepsilon$ with "
+                 r"$\|f'(u)\| \leq \varepsilon$. Palais-Smale turns them into a true minimum",
+                 extra_top=8)  # fmt: skip
+    fig.subplots_adjust(wspace=0.2)
+    return fig
+
+
 def main() -> None:
     for name, build in [
         ("00_overview.png", fig_overview),
@@ -243,6 +381,9 @@ def main() -> None:
         ("02_telescoping_cancellation.png", fig_cancellation),
         ("03_telescoping_limit.png", fig_telescoping_limit),
         ("04_pi_p.png", fig_pi_p),
+        ("05_time_scales.png", fig_time_scales),
+        ("06_dirac.png", fig_dirac),
+        ("07_ekeland.png", fig_ekeland),
     ]:
         print("wrote", viz.save(build(), FIGURES / name).relative_to(ROOT))
 

@@ -9,3 +9,6 @@ public import Portfolio.Analysis.LogLowerBound
 public import Portfolio.Series.Telescoping
 public import Portfolio.PLaplacian.PiP
 public import Portfolio.PLaplacian.ClosedForm
+public import Portfolio.Distributions.DiracNotRegular
+public import Portfolio.TimeScales.Integers
+public import Portfolio.CriticalPoints.Ekeland

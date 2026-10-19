@@ -113,8 +113,70 @@ def test_pi_p_closed_form_at_two_is_pi():
     assert sp.simplify(2 * sp.pi / (p * sp.sin(sp.pi / p))) == sp.pi
 
 
+# ── time scales ──────────────────────────────────────────────────────────────
+def test_hilger_exponential_solves_the_dynamic_equation():
+    h, c = sp.Rational(1, 3), sp.Rational(5, 2)
+    y = [sp.Integer(1)]
+    for _ in range(10):
+        y.append(y[-1] + h * c * y[-1])  # y(t + h) = y(t) + mu(t) y^Delta(t)
+    assert all(y[k] == (1 + h * c) ** k for k in range(11))
+
+
+def test_hilger_exponential_below_exp_and_converges():
+    c, t = 1.0, 1.0
+    vals = [(1 + c * t / N) ** N for N in (1, 2, 10, 100, 10_000)]
+    assert vals[0] == 2.0 and all(v < np.e for v in vals)
+    assert all(a < b for a, b in zip(vals, vals[1:]))
+    assert abs(vals[-1] - np.e) < 2e-4
+
+
+# ── Dirac delta ──────────────────────────────────────────────────────────────
+def test_dirac_proof_mechanism_on_an_unbounded_locally_integrable_f():
+    # f(x) = |x|^(-1/2) is locally integrable but unbounded near 0; the proof only needs
+    # that its integral over (-r, r), here 4 sqrt(r), goes to 0.
+    from scipy.integrate import quad
+
+    for r in (1.0, 0.1, 0.01):
+        val = 2 * quad(lambda x: x ** -0.5, 0, r)[0]
+        assert abs(val - 4 * np.sqrt(r)) < 1e-8
+    assert 4 * np.sqrt(0.01) < 1
+
+
 # ── the repository itself ───────────────────────────────────────────────────
 def test_no_sorry_in_the_lean_sources():
     for f in list((ROOT / "Portfolio").rglob("*.lean")) + list((ROOT / "Solutions").rglob("*.lean")):
         code = re.sub(r"/-.*?-/", "", f.read_text(encoding="utf-8"), flags=re.S)
         assert not re.search(r"\bsorry\b", code), f
+
+
+# ── Ekeland's principle ─────────────────────────────────────────────────────
+def _wavy(z):
+    """The function drawn in figures/07_ekeland.png."""
+    return 1.1 + 0.45 * np.sin(2.2 * z) + 0.05 * (z - 0.6) ** 2
+
+
+def test_ekeland_point_of_the_figure():
+    z = np.linspace(-3.2, 3.2, 4001)
+    x0, eps = 2.6, 0.35
+    i = int(np.argmin(_wavy(z) + eps * np.abs(z - x0)))
+    y = z[i]
+    # (a) the point does at least as well as the start, cone included
+    assert _wavy(y) + eps * abs(x0 - y) <= _wavy(x0)
+    # (b) strict minimizer of f + eps |. - y| on the grid
+    g = _wavy(z) + eps * np.abs(z - y)
+    others = np.delete(g, i)
+    assert np.all(others > _wavy(y))
+    # the principle moved, but no farther than (f(x0) - inf f) / eps, which follows from (a)
+    assert y != x0
+    assert eps * abs(x0 - y) <= _wavy(x0) - _wavy(z).min()
+
+
+def test_almost_critical_points_of_exp_minus_x_escape():
+    # inf e^{-x} = 0 is not attained; u_eps = log(1/eps) satisfies both bounds of statement 2
+    s = sp.symbols("s", real=True)
+    f = sp.exp(-s)
+    for eps in [sp.Rational(1, 2), sp.Rational(1, 10), sp.Rational(1, 100)]:
+        u = sp.log(1 / eps)
+        assert sp.simplify(f.subs(s, u) - eps) == 0          # f(u) = eps <= inf f + eps
+        assert sp.simplify(sp.Abs(sp.diff(f, s).subs(s, u)) - eps) == 0  # |f'(u)| = eps
+    assert sp.limit(sp.log(1 / s), s, 0, "+") == sp.oo

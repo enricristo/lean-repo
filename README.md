@@ -57,6 +57,51 @@ finishes with Euler's reflection formula $\Gamma(z)\Gamma(1-z) = \pi/\sin(\pi z)
 
 ![pi_p](figures/04_pi_p.png)
 
+### 4. Calculus on the time scale hℤ
+
+$$y^\Delta = c\,y,\quad y(0) = 1 \text{ on } h\mathbb{Z} \;\Longrightarrow\; y(hn) = (1 + hc)^n \;\xrightarrow[\;h \to 0\;]{}\; e^{ct}$$
+
+A time scale is a closed subset of $\mathbb{R}$, and calculus on it treats
+differential and difference equations as one theory. Mathlib has none of
+it, so the file defines the forward jump $\sigma$, the graininess $\mu$ and
+the delta derivative from scratch, computes them on $h\mathbb{Z}$, and proves
+that the Hilger exponential is the unique solution of $y^\Delta = p\,y$. It is
+strictly below the real exponential for every $h > 0$ and converges to it as
+the graininess goes to $0$.
+[Note](notes/time-scales.md) · [Lean](Portfolio/TimeScales/Integers.lean)
+
+![time scales](figures/05_time_scales.png)
+
+### 5. The Dirac delta is not a function
+
+$$\nexists\, f \in L^1_{\mathrm{loc}}(\mathbb{R}^n) : \int f\,\varphi = \varphi(0) \text{ for every test function } \varphi \qquad (n \ge 1)$$
+
+If such an $f$ existed, bumps $\varphi$ with $\varphi(0) = 1$ supported in
+smaller and smaller balls would give $1 \le \int_{B_\varepsilon} |f|$, while
+the right side tends to $0$ because the balls shrink to a point of measure
+zero. The Lean statement uses only plain Mathlib notions, with smooth meaning
+$C^\infty$: with the analytic exponent the hypothesis would be empty and the
+theorem false.
+[Note](notes/dirac-not-regular.md) · [Lean](Portfolio/Distributions/DiracNotRegular.lean)
+
+![dirac](figures/06_dirac.png)
+
+### 6. Ekeland's principle and the Palais-Smale condition
+
+$$f : E \to \mathbb{R} \text{ differentiable, bounded below} \;\Longrightarrow\; \forall \varepsilon > 0\;\, \exists\, u : \; f(u) \le \inf f + \varepsilon,\;\; \|f'(u)\| \le \varepsilon$$
+
+On a complete metric space a lower semicontinuous function bounded below
+has, near any starting point, a point $y$ that the cone
+$z \mapsto f(y) - \varepsilon\,d(z, y)$ touches only once. The proof is a
+Cauchy sequence of nested closed sets whose radii shrink like $2^{-n}$. On a
+Banach space, differentiating the cone inequality gives almost minimizers
+that are almost critical, and the Palais-Smale condition at the infimum
+turns them into a true minimizer with $f'(u) = 0$. This is the compactness
+mechanism behind the critical point theory of my master's thesis.
+[Note](notes/ekeland.md) · [Lean](Portfolio/CriticalPoints/Ekeland.lean)
+
+![ekeland](figures/07_ekeland.png)
+
 ## Learning track
 
 My solutions to the two standard introductions to Lean, kept in their own
@@ -77,7 +122,7 @@ Three independent layers:
    each main theorem depends on: `propext`, `Classical.choice` and
    `Quot.sound`, the standard ones. An unfinished proof would add `sorryAx`
    and break the build.
-3. **SymPy.** [`tests/test_identities.py`](tests/test_identities.py) redoes
+3. **SymPy and SciPy.** [`tests/test_identities.py`](tests/test_identities.py) redoes
    every algebraic identity used in the proofs in a second system and
    recomputes the numbers shown in the figures.
 
@@ -103,7 +148,7 @@ lake build                      # proofs, solutions and axiom audit
 
 # Python
 pip install -r requirements.txt
-pytest                          # 15 checks
+pytest                          # SymPy and SciPy checks
 python scripts/make_figures.py  # regenerates figures/
 ```
 
@@ -116,6 +161,8 @@ The Lean version is pinned in `lean-toolchain` and the Mathlib version in
 - J. Avigad and P. Massot, *Mathematics in Lean*.
 - K. Buzzard and M. Pedramfar, *Natural Number Game*.
 - P. Lindqvist, *Some remarkable sine and cosine functions*, Ricerche di Matematica 44 (1995).
+- I. Ekeland, *On the variational principle*, J. Math. Anal. Appl. 47 (1974).
+- M. Bohner and A. Peterson, *Dynamic Equations on Time Scales*, Birkhäuser, 2001.
 
 ## Author
 

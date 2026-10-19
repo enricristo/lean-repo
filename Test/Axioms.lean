@@ -52,3 +52,63 @@ info: 'Portfolio.piP_eq' depends on axioms: [propext, Classical.choice, Quot.sou
 -/
 #guard_msgs in
 #print axioms Portfolio.piP_eq
+
+/--
+info: 'Portfolio.dirac_not_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.dirac_not_regular
+
+/--
+info: 'Portfolio.dirac_not_regular_euclidean' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.dirac_not_regular_euclidean
+
+/--
+info: 'Portfolio.hilgerExp_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.hilgerExp_unique
+
+/--
+info: 'Portfolio.eq_hilgerExp_of_deltaDeriv' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.eq_hilgerExp_of_deltaDeriv
+
+/--
+info: 'Portfolio.deltaDeriv_int' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.deltaDeriv_int
+
+/--
+info: 'Portfolio.tendsto_hilgerExp_exp' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.tendsto_hilgerExp_exp
+
+/--
+info: 'Portfolio.hZ_induction' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.hZ_induction
+
+/--
+info: 'Portfolio.ekeland' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.ekeland
+
+/--
+info: 'Portfolio.exists_almost_critical' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.exists_almost_critical
+
+/--
+info: 'Portfolio.exists_critical_point_of_palaisSmale' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.exists_critical_point_of_palaisSmale
