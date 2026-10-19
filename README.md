@@ -41,18 +41,19 @@ unconditional `HasSum` using that the terms are nonnegative.
 
 ![cancellation](figures/02_telescoping_cancellation.png)
 
-### 3. π<sub>p</sub>, and why π<sub>2</sub> = π
+### 3. π<sub>p</sub> in closed form
 
-$$\pi_p = 2\int_0^1 \left(1-s^p\right)^{-1/p} ds, \qquad \pi_2 = 2\int_0^1 \frac{ds}{\sqrt{1-s^2}} = \pi$$
+$$\pi_p = 2\int_0^1 \left(1-s^p\right)^{-1/p} ds = \frac{2\pi}{p\,\sin(\pi/p)} \qquad (p > 1)$$
 
 $\pi_p$ is the constant of the generalized sine that solves the one
 dimensional $p$-Laplacian eigenvalue problem: on $(0, 1)$ the first
-eigenvalue is $(p-1)\pi_p^{\,p}$. The integral is improper at $s = 1$; the
-Lean proof never takes a limit, because a nonnegative derivative of a bounded
-function (here $\arcsin$) is automatically integrable. Next: the closed form
-$\pi_p = 2\pi/(p\sin(\pi/p))$ for every $p > 1$, through the Beta function
-and Euler's reflection formula.
-[Note](notes/pi-p.md) · [Lean](Portfolio/PLaplacian/PiP.lean)
+eigenvalue is $(p-1)\pi_p^{\,p}$. The integral is improper, so the proof
+avoids limits twice. For $p = 2$ it uses $\arcsin$ and the fact that a
+nonnegative derivative of a bounded function is integrable. For every
+$p > 1$ it substitutes $u = s^p$ through Mathlib's rule on $(0, \infty)$ with
+an indicator function, lands on the Beta function $B(1/p, 1 - 1/p)$, and
+finishes with Euler's reflection formula $\Gamma(z)\Gamma(1-z) = \pi/\sin(\pi z)$.
+[Note](notes/pi-p.md) · [Lean](Portfolio/PLaplacian/ClosedForm.lean)
 
 ![pi_p](figures/04_pi_p.png)
 
@@ -102,7 +103,7 @@ lake build                      # proofs, solutions and axiom audit
 
 # Python
 pip install -r requirements.txt
-pytest                          # 13 checks
+pytest                          # 15 checks
 python scripts/make_figures.py  # regenerates figures/
 ```
 

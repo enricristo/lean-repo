@@ -30,7 +30,7 @@ def lean_stats() -> dict[str, int]:
     text = "\n".join(f.read_text(encoding="utf-8") for f in files)
     code = re.sub(r"/-.*?-/", "", text, flags=re.S)  # drop comments and docstrings
     return {
-        "results": len(files),
+        "results": len(list((ROOT / "notes").glob("*.md"))),
         "declarations": len(re.findall(r"^(?:noncomputable )?(?:theorem|lemma|def) ", code, flags=re.M)),
         "sorry": len(re.findall(r"\bsorry\b", code)),
     }
@@ -203,7 +203,7 @@ def fig_pi_p():
         ax.plot(s, integrand(s, p), color=NAVY_LIGHT, lw=1.4)
     ax.fill_between(s, 0, integrand(s, 2), color=AMBER_WASH, lw=0)
     ax.plot(s, integrand(s, 2), color=AMBER, lw=2.2)
-    ax.text(0.45, 0.55, "area = π/2\nproved in Lean", color=AMBER, fontsize=10, fontweight="semibold", ha="center")
+    ax.text(0.45, 0.55, "p = 2: area π/2", color=AMBER, fontsize=10, fontweight="semibold", ha="center")
     ax.text(0.84, 2.95, "p = 1.5", color=INK_2, fontsize=8.5, ha="right")
     ax.text(0.79, 1.85, "p = 2", color=AMBER, fontsize=9, ha="right", fontweight="semibold")
     ax.text(0.99, 1.22, "p = 4", color=INK_2, fontsize=8.5, ha="right")
@@ -212,24 +212,26 @@ def fig_pi_p():
     ax.set_xlabel("s")
     ax.set_title(r"The integrand $(1-s^p)^{-1/p}$ blows up at $s = 1$, the area stays finite", pad=10)
 
-    ps = np.linspace(1.15, 10, 300)
-    bx.plot(ps, closed(ps), color=NAVY, lw=2.0)
+    ps = np.linspace(1.12, 10, 300)
+    bx.plot(ps, 2 * closed(ps), color=AMBER, lw=2.2)
     qs = [1.25, 1.5, 2, 3, 4, 6, 8, 10]
-    vals = [quad(integrand, 0, 1, args=(q,), limit=200)[0] for q in qs]
-    bx.scatter(qs, vals, s=26, color=PAPER, edgecolors=NAVY, linewidths=1.4, zorder=3)
-    bx.scatter([2], [np.pi / 2], s=60, color=AMBER, zorder=4)
-    bx.text(2.25, np.pi / 2 + 0.06, "p = 2:  π/2", color=AMBER, fontsize=10, fontweight="semibold")
-    bx.axhline(1, color=CONTEXT, lw=1, ls=(0, (4, 3)))
-    bx.text(9.9, 0.97, "limit 1 as p → ∞", color=INK_3, fontsize=8.5, ha="right", va="top")
-    bx.text(4.6, 2.2, "line: π / (p sin(π/p)), the closed form\ncircles: numerical quadrature (SciPy)", color=INK_2, fontsize=8.5)
+    vals = [2 * quad(integrand, 0, 1, args=(q,), limit=200)[0] for q in qs]
+    bx.scatter(qs, vals, s=30, color=PAPER, edgecolors=NAVY, linewidths=1.5, zorder=3)
+    bx.annotate("π₂ = π", xy=(2, np.pi), xytext=(2.6, 3.9), color=INK, fontsize=10, fontweight="medium",
+                arrowprops={"arrowstyle": "-", "color": INK_3, "lw": 0.8})  # fmt: skip
+    bx.axhline(2, color=CONTEXT, lw=1, ls=(0, (4, 3)))
+    bx.text(9.9, 1.95, "limit 2 as p → ∞", color=INK_3, fontsize=8.5, ha="right", va="top")
+    bx.text(4.3, 4.6, r"line: $2\pi\,/\,(p\,\sin(\pi/p))$, proved in Lean", color=AMBER, fontsize=10,
+            fontweight="semibold")  # fmt: skip
+    bx.text(4.3, 4.25, "circles: numerical quadrature (SciPy)", color=INK_2, fontsize=8.5)
     bx.set_xlim(1, 10.2)
-    bx.set_ylim(0.8, 3.0)
+    bx.set_ylim(1.6, 6.0)
     bx.set_xlabel("p")
-    bx.set_title("Its value as p varies", pad=10)
+    bx.set_title(r"$\pi_p$ as p varies", pad=10)
 
-    viz.headline(fig, r"$\pi_p$ comes from one integral, which for p = 2 equals π/2",
-                 r"The integral $\int_0^1 (1-s^p)^{-1/p}\,ds$ behind $\pi_p$, for several p. The case p = 2 is the first one formalized",
-                 extra_top=22)  # fmt: skip
+    viz.headline(fig, r"$\pi_p = 2\pi\,/\,(p\,\sin(\pi/p))$ for every p > 1, proved in Lean",
+                 r"Left: the integrand behind $\pi_p$ blows up at s = 1 but encloses a finite area. Right: the closed form against quadrature",
+                 extra_top=14)  # fmt: skip
     fig.subplots_adjust(wspace=0.18)
     return fig
 

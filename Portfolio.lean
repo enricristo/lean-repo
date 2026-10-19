@@ -8,3 +8,4 @@ module
 public import Portfolio.Analysis.LogLowerBound
 public import Portfolio.Series.Telescoping
 public import Portfolio.PLaplacian.PiP
+public import Portfolio.PLaplacian.ClosedForm

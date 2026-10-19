@@ -40,3 +40,15 @@ info: 'Portfolio.piP_two' depends on axioms: [propext, Classical.choice, Quot.so
 -/
 #guard_msgs in
 #print axioms Portfolio.piP_two
+
+/--
+info: 'Portfolio.piIntegral_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.piIntegral_eq
+
+/--
+info: 'Portfolio.piP_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.piP_eq

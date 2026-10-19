@@ -91,6 +91,28 @@ def test_pi_integral_closed_form_numerically():
         assert abs(value - np.pi / (p * np.sin(np.pi / p))) < 1e-7, p
 
 
+def test_pi_p_closed_form_and_its_ingredients():
+    from scipy.integrate import quad
+    from scipy.special import beta, gamma
+
+    for p in (1.25, 1.5, 2, 3, 4, 6, 8, 10):
+        a = 1 / p
+        # step 1: substitution u = s^p
+        lhs, _ = quad(lambda s, p=p: (1 - s**p) ** (-a), 0, 1, limit=200)
+        rhs, _ = quad(lambda u, a=a: u ** (a - 1) * (1 - u) ** (-a), 0, 1, limit=200)
+        assert abs(lhs - a * rhs) < 1e-7, p
+        # step 2: Beta, Gamma and Euler's reflection formula
+        assert abs(beta(a, 1 - a) - gamma(a) * gamma(1 - a)) < 1e-9
+        assert abs(gamma(a) * gamma(1 - a) - np.pi / np.sin(np.pi * a)) < 1e-9
+        # step 3: pi_p
+        assert abs(2 * lhs - 2 * np.pi / (p * np.sin(np.pi / p))) < 1e-7, p
+
+
+def test_pi_p_closed_form_at_two_is_pi():
+    p = sp.Integer(2)
+    assert sp.simplify(2 * sp.pi / (p * sp.sin(sp.pi / p))) == sp.pi
+
+
 # ── the repository itself ───────────────────────────────────────────────────
 def test_no_sorry_in_the_lean_sources():
     for f in list((ROOT / "Portfolio").rglob("*.lean")) + list((ROOT / "Solutions").rglob("*.lean")):
