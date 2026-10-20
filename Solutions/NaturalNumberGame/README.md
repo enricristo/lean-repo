@@ -2,11 +2,11 @@
 
 Solutions to the [Natural Number Game](https://adam.math.hhu.de/#/g/leanprover-community/nng4), one file per world.
 
-The game builds the natural numbers from scratch (zero, successor, induction) and proves the usual arithmetic facts from those axioms alone. The files here restate each level over Mathlib's `ℕ` and use only the tactics the game allows at that point, so the proofs stay faithful to the game.
+The game builds the natural numbers from scratch (zero, successor, induction) and proves the usual arithmetic facts from those axioms alone. The proofs here are typed exactly as I entered them in the game. To make that possible, [`MyNat.lean`](MyNat.lean) rebuilds the game's own natural numbers, its axioms of addition, and its version of `rw`, which rewrites without closing the goal.
 
 | World | File | Status |
 |---|---|---|
-| Tutorial | [`Tutorial.lean`](Tutorial.lean) | in progress |
+| Tutorial | [`Tutorial.lean`](Tutorial.lean) | levels 7 and 8 recorded |
 | Addition | | not started |
 | Multiplication | | not started |
 | Power | | not started |

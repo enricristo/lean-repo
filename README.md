@@ -109,7 +109,7 @@ folder and compiled with the rest of the project.
 
 | Course | Folder | Progress |
 |---|---|---|
-| [Natural Number Game](https://adam.math.hhu.de/#/g/leanprover-community/nng4) | [`Solutions/NaturalNumberGame`](Solutions/NaturalNumberGame) | Tutorial World in progress |
+| [Natural Number Game](https://adam.math.hhu.de/#/g/leanprover-community/nng4) | [`Solutions/NaturalNumberGame`](Solutions/NaturalNumberGame) | Tutorial World done |
 | [Mathematics in Lean](https://leanprover-community.github.io/mathematics_in_lean/) | [`Solutions/MathematicsInLean`](Solutions/MathematicsInLean) | starts after the game |
 
 ## How the results are checked
