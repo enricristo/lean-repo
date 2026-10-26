@@ -112,3 +112,9 @@ info: 'Portfolio.exists_critical_point_of_palaisSmale' depends on axioms: [prope
 -/
 #guard_msgs in
 #print axioms Portfolio.exists_critical_point_of_palaisSmale
+
+/--
+info: 'Portfolio.PlaneColoring.properColoring_seven' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Portfolio.PlaneColoring.properColoring_seven

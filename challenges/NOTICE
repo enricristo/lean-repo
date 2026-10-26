@@ -1,0 +1,7 @@
+challenges/openai-math-*/Challenge.lean are copied unchanged from OpenAI's openai/math release
+(https://github.com/openai/math, commit adc7f1241b42e322a6451854ab7e4b4c146bf78a,
+lean/ComparatorChallenges/), via the FineEnvs/openai-math dataset on Hugging Face.
+Copyright (c) OpenAI. Licensed under the Apache License, Version 2.0.
+
+The corresponding Submission.lean files contain those statements followed by new proofs, and are
+released under the Apache License, Version 2.0, like the rest of this repository.

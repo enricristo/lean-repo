@@ -4,6 +4,7 @@ These tests do not replace the formal proofs. They check the same identities
 in an independent system, and they recompute the numbers quoted in the notes.
 """
 
+import math
 import re
 from fractions import Fraction
 from pathlib import Path
@@ -180,3 +181,34 @@ def test_almost_critical_points_of_exp_minus_x_escape():
         assert sp.simplify(f.subs(s, u) - eps) == 0          # f(u) = eps <= inf f + eps
         assert sp.simplify(sp.Abs(sp.diff(f, s).subs(s, u)) - eps) == 0  # |f'(u)| = eps
     assert sp.limit(sp.log(1 / s), s, 0, "+") == sp.oo
+
+
+# ── seven-coloring of the plane ─────────────────────────────────────────────
+def _brick(x, y):
+    """Brick (i, j) of a point, as `brickCol` / `brickRow` in Lean."""
+    j = math.floor(5 * y / 3)
+    return math.floor(5 * x / 4 - 2 * j / 5), j
+
+
+def test_brick_offsets_and_gaps_exactly():
+    # offsets within reach of a unit distance that repeat the color, and their squared gaps
+    w, h, s = Fraction(4, 5), Fraction(3, 5), Fraction(2, 5)
+    same = sorted((di, dj) for di in range(-3, 4) for dj in range(-2, 3) if (di + 5 * dj) % 7 == 0)
+    assert same == [(-3, 2), (-2, -1), (0, 0), (2, 1), (3, -2)]
+    for di, dj in same:
+        if (di, dj) == (0, 0):
+            continue
+        gx = max(Fraction(0), abs(di + s * dj) * w - w)
+        gy = max(Fraction(0), (abs(dj) - 1) * h)
+        assert gx * gx + gy * gy in (Fraction(784, 625), Fraction(801, 625))
+    assert w * w + h * h == 1  # the brick diagonal
+
+
+def test_unit_distance_pairs_never_share_a_color():
+    rng = np.random.default_rng(0)
+    for _ in range(200_000):
+        x, y = rng.uniform(-50, 50, 2)
+        a = rng.uniform(0, 2 * math.pi)
+        i, j = _brick(x, y)
+        k, l = _brick(x + math.cos(a), y + math.sin(a))
+        assert (i + 5 * j) % 7 != (k + 5 * l) % 7

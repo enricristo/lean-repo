@@ -1,0 +1,32 @@
+name: Challenges (openai-math format)
+
+on:
+  push:
+    paths:
+      - "challenges/**"
+      - ".github/workflows/challenges.yml"
+  pull_request:
+    paths:
+      - "challenges/**"
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: ${{ matrix.task }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task:
+          - openai-math-plane-coloring
+          - openai-math-truffet-counterexample
+          - pi-p-closed-form
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Grade with the pinned Lean and Mathlib
+        run: bash challenges/check.sh "challenges/${{ matrix.task }}"

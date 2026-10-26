@@ -10,6 +10,7 @@ new results are added.
 
 from __future__ import annotations
 
+import math
 import re
 from fractions import Fraction
 from pathlib import Path
@@ -374,6 +375,70 @@ def fig_ekeland():
     return fig
 
 
+# ── 08 · plane coloring ─────────────────────────────────────────────────────
+BRICK_COLORS = ["#24609C", "#C07A1E", "#5E8C4A", "#9C4F6B", "#3E9AA6", "#7A64AE", "#B49A2C"]
+
+
+def brick_of(x: float, y: float) -> tuple[int, int]:
+    """The brick (i, j) containing (x, y), exactly as `brickCol` and `brickRow` in Lean."""
+    j = math.floor(5 * y / 3)
+    return math.floor(5 * x / 4 - 2 * j / 5), j
+
+
+def fig_plane_coloring():
+    from fractions import Fraction as F
+    from matplotlib.patches import Circle, Rectangle
+
+    fig, (ax, bx) = plt.subplots(1, 2, figsize=(12, 5.0), gridspec_kw={"width_ratios": [1.45, 1]})
+    p = (0.4, 0.3)
+    c0 = 0
+    for j in range(-4, 5):
+        for i in range(-7, 8):
+            x, y = 4 * i / 5 + 8 * j / 25, 3 * j / 5
+            c = (i + 5 * j) % 7
+            same = c == c0
+            ax.add_patch(Rectangle((x, y), 0.8, 0.6, facecolor=BRICK_COLORS[c], alpha=0.95 if same else 0.32,
+                                   edgecolor=INK if same else PAPER, lw=1.4 if same else 1.0))  # fmt: skip
+    ax.add_patch(Circle(p, 1.0, fill=False, ls=(0, (5, 3)), lw=1.6, color=INK))
+    ax.scatter([p[0]], [p[1]], s=22, color=INK, zorder=5)
+    ax.annotate("", xy=(p[0] + 1, p[1]), xytext=p, arrowprops=dict(arrowstyle="-", color=INK, lw=1.0))
+    ax.text(p[0] + 0.5, p[1] + 0.05, "1", color=INK, fontsize=10, ha="center", va="bottom")
+    ax.set_xlim(-2.4, 2.4)
+    ax.set_ylim(-1.5, 1.5)
+    ax.set_aspect("equal")
+    ax.grid(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for side in ax.spines.values():
+        side.set_visible(False)
+    ax.set_title("Bricks 4/5 × 3/5, row shift 2/5, color (i + 5j) mod 7", pad=10)
+
+    cases = [((2, 1), "(2, 1)"), ((-2, -1), "(−2, −1)"), ((-3, 2), "(−3, 2)"), ((3, -2), "(3, −2)")]
+    w, h, sh = F(4, 5), F(3, 5), F(2, 5)
+    gaps = []
+    for (di, dj), _ in cases:
+        gx = max(F(0), abs(di + sh * dj) * w - w)
+        gy = max(F(0), (abs(dj) - 1) * h)
+        gaps.append(gx * gx + gy * gy)
+    ys = np.arange(len(cases))
+    bx.barh(ys, [float(g) for g in gaps], color=AMBER, height=0.55)
+    bx.axvline(1, color=INK, lw=1.4)
+    bx.text(1.02, len(cases) - 0.35, "distance² = 1", color=INK, fontsize=9, ha="left")
+    for y, g in zip(ys, gaps):
+        bx.text(float(g) + 0.02, y, f"{g.numerator}/{g.denominator}", color=INK, fontsize=9.5, va="center")
+    bx.set_yticks(ys, [lab for _, lab in cases])
+    bx.set_xlim(0, 1.55)
+    bx.set_ylim(-0.6, len(cases) - 0.1)
+    bx.invert_yaxis()
+    bx.set_xlabel("smallest squared distance between the two bricks")
+    bx.set_title("Offsets (di, dj) that repeat the color: all too far", pad=10)
+    viz.headline(fig, "Seven colors suffice: no two points at distance 1 share a color",
+                 "The circle of radius 1 never meets the color of its center. Proved in Lean for the "
+                 "openai-math task plane-coloring", extra_top=8)  # fmt: skip
+    fig.subplots_adjust(wspace=0.22)
+    return fig
+
+
 def main() -> None:
     for name, build in [
         ("00_overview.png", fig_overview),
@@ -384,6 +449,7 @@ def main() -> None:
         ("05_time_scales.png", fig_time_scales),
         ("06_dirac.png", fig_dirac),
         ("07_ekeland.png", fig_ekeland),
+        ("08_plane_coloring.png", fig_plane_coloring),
     ]:
         print("wrote", viz.save(build(), FIGURES / name).relative_to(ROOT))
 

@@ -1,0 +1,8 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Submission",
+  "theorem_names": ["Ambrosio.PLaplacian.piP_two", "Ambrosio.PLaplacian.piP_closed_form"],
+  "definition_names": ["Ambrosio.PLaplacian.piP"],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": false
+}

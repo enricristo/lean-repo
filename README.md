@@ -102,6 +102,28 @@ mechanism behind the critical point theory of my master's thesis.
 
 ![ekeland](figures/07_ekeland.png)
 
+### 7. Seven colors suffice for the plane
+
+$$\exists\, c : \mathbb{R}^2 \to \{0, \dots, 6\} \quad \text{with} \quad |x - y| = 1 \;\Rightarrow\; c(x) \neq c(y)$$
+
+The upper bound $\chi(\mathbb{R}^2) \le 7$ of the Hadwiger–Nelson problem, stated exactly as the task
+`plane-coloring` of the openai-math Lean environments. Instead of hexagons the proof uses bricks
+$4/5 \times 3/5$, each row shifted by $2/5$, with color $(i + 5j) \bmod 7$: a brick's diagonal is
+exactly $1$, and two bricks of the same color are always more than $28/25$ apart.
+[Note](notes/plane-coloring.md) · [Lean](Portfolio/Combinatorics/PlaneColoring.lean) ·
+[grader format](challenges/openai-math-plane-coloring/)
+
+![plane coloring](figures/08_plane_coloring.png)
+
+## Challenges in the openai-math format
+
+[`challenges/`](challenges/) holds Lean tasks in the format of the
+[openai-math environments](https://huggingface.co/datasets/FineEnvs/openai-math): a statement with
+`sorry`, a grader configuration, and a complete proof, all pinned to the grader's Lean and Mathlib.
+Two are tasks from that benchmark, proved here (`plane-coloring` and `truffet-counterexample`); one is
+the closed form of $\pi_p$ from my thesis, offered as a task. A script reproduces the grader's checks
+and runs in CI. [Details](challenges/README.md)
+
 ## Learning track
 
 My solutions to the two standard introductions to Lean, kept in their own
@@ -133,6 +155,7 @@ GitHub Actions runs all three on every push.
 | Path | Content |
 |---|---|
 | [`Portfolio/`](Portfolio/) | Formal results, one file per result |
+| [`challenges/`](challenges/) | Tasks in the openai-math grader format, with proofs and a checking script |
 | [`notes/`](notes/) | One note per result: idea, figure, proof map, Lean walkthrough |
 | [`Solutions/`](Solutions/) | Natural Number Game and Mathematics in Lean |
 | [`Test/`](Test/) | Axiom audit |
@@ -161,6 +184,7 @@ The Lean version is pinned in `lean-toolchain` and the Mathlib version in
 - J. Avigad and P. Massot, *Mathematics in Lean*.
 - K. Buzzard and M. Pedramfar, *Natural Number Game*.
 - P. Lindqvist, *Some remarkable sine and cosine functions*, Ricerche di Matematica 44 (1995).
+- A. Soifer, *The Mathematical Coloring Book*, Springer, 2009.
 - I. Ekeland, *On the variational principle*, J. Math. Anal. Appl. 47 (1974).
 - M. Bohner and A. Peterson, *Dynamic Equations on Time Scales*, Birkhäuser, 2001.
 
