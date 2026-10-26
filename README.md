@@ -120,8 +120,8 @@ exactly $1$, and two bricks of the same color are always more than $28/25$ apart
 [`challenges/`](challenges/) holds Lean tasks in the format of the
 [openai-math environments](https://huggingface.co/datasets/FineEnvs/openai-math): a statement with
 `sorry`, a grader configuration, and a complete proof, all pinned to the grader's Lean and Mathlib.
-Three are tasks from that benchmark, proved here (`plane-coloring`, `truffet-counterexample`,
-`hadamard-cube-fiber`); one is
+Four are tasks from that benchmark, proved here (`plane-coloring`, `truffet-counterexample`,
+`hadamard-cube-fiber`, `honeycomb-free-energy`); one is
 the closed form of $\pi_p$ from my thesis, offered as a task. A script reproduces the grader's checks
 and runs in CI. [Details](challenges/README.md)
 

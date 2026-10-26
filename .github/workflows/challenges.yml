@@ -19,6 +19,7 @@ jobs:
       matrix:
         task:
           - openai-math-hadamard-cube-fiber
+          - openai-math-honeycomb-free-energy
           - openai-math-plane-coloring
           - openai-math-truffet-counterexample
           - pi-p-closed-form
