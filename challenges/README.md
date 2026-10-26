@@ -21,11 +21,12 @@ from the Lean FRO.
 | Folder | Source | What it says | Status |
 |---|---|---|---|
 | [`openai-math-plane-coloring`](openai-math-plane-coloring/) | openai-math, family 158 | The plane can be colored with 7 colors so that points at distance 1 always differ. [Note](../notes/plane-coloring.md) | proved |
+| [`openai-math-hadamard-cube-fiber`](openai-math-hadamard-cube-fiber/) | openai-math, family 266 | A lemma on complex Hadamard matrices of order 6 whose entrywise square is also Hadamard: on the rows `i ≠ j`, if every ratio `H i k · conj(H j k)` cubes to `a` or `b`, the ratios with cube `a` sum to zero. Orthogonality gives `Σ r = 0` and `Σ r² = 0`; since `r² = r³ · conj r`, the second sum is `a · conj A + b · conj B`, which forces `A = 0`. | proved |
 | [`openai-math-truffet-counterexample`](openai-math-truffet-counterexample/) | openai-math, family 104 | An explicit run of a tropical (max-plus) elimination procedure on a two-variable system: two forced steps, then it stops at a feasible point of cost 1, while another feasible point has cost 0. So the procedure's output is not optimal. | proved |
 | [`pi-p-closed-form`](pi-p-closed-form/) | my master's thesis | `π_p = 2π / (p sin(π/p))` and `π_2 = π`, the constant of the one-dimensional p-Laplacian. The proof is the one in [`Portfolio/PLaplacian`](../Portfolio/PLaplacian/). | proved, offered as a task |
 
-OpenAI's reference proofs are public; they were not consulted for either proof here.
-Both statements come from the release unchanged; `Challenge.lean` in each folder is byte-identical to
+OpenAI's reference proofs are public; they were not consulted for any proof here.
+The statements come from the release unchanged; `Challenge.lean` in each folder is byte-identical to
 the dataset's copy.
 
 ## How the proofs are checked
